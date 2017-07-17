@@ -7,9 +7,9 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 
-import com.estimote.coresdk.observation.region.beacon.BeaconRegion;
-import com.estimote.coresdk.recognition.packets.Beacon;
-import com.estimote.coresdk.service.BeaconManager;
+import com.estimote.sdk.Beacon;
+import com.estimote.sdk.BeaconManager;
+import com.estimote.sdk.Region;
 
 import java.util.List;
 import java.util.UUID;
@@ -42,9 +42,9 @@ public class MyApplication extends Application {
 
         beaconManager = new BeaconManager(getApplicationContext());
 
-        beaconManager.setMonitoringListener(new BeaconManager.BeaconMonitoringListener() {
+        beaconManager.setMonitoringListener(new BeaconManager.MonitoringListener() {
             @Override
-            public void onEnteredRegion(BeaconRegion region, List<Beacon> list) {
+            public void onEnteredRegion(Region region, List<Beacon> list) {
                 showNotification(
                         "You are here",
                         "Current here information is there, "
@@ -52,7 +52,7 @@ public class MyApplication extends Application {
                                 + "When will train A hit train B?");
             }
             @Override
-            public void onExitedRegion(BeaconRegion region) {
+            public void onExitedRegion(Region region) {
             }
         });
 
@@ -60,7 +60,7 @@ public class MyApplication extends Application {
             @Override
             public void onServiceReady(){
                 beaconManager.startMonitoring(
-                        new BeaconRegion("monitored region", UUID.fromString
+                        new Region("monitored region", UUID.fromString
                         (Constants.BEACON_UUID), null, null));
             }
         });
