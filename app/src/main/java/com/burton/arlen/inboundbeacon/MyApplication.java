@@ -61,7 +61,7 @@ public class MyApplication extends Application {
             public void onServiceReady(){
                 beaconManager.startMonitoring(
                         new BeaconRegion("monitored region", UUID.fromString
-                        ("replace with UUID"), 00000, 00000));
+                        (Constants.BEACON_UUID), null, null));
             }
         });
     }

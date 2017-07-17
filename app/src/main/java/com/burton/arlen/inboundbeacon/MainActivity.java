@@ -3,6 +3,10 @@ package com.burton.arlen.inboundbeacon;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+
 import com.estimote.coresdk.common.requirements.SystemRequirementsChecker;
 import com.estimote.coresdk.observation.region.beacon.BeaconRegion;
 import com.estimote.coresdk.service.BeaconManager;
@@ -13,7 +17,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class MainActivity extends AppCompatActivity{
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+    @Bind(R.id.findButton)Button findButton;
+    @Bind(R.id.noBeacon)TextView noBeacon;
+    @Bind(R.id.foundBeacon)TextView foundBeacon;
+
     private static final Map<String, List<String>> PLACES_BY_BEACONS;
     static {
         Map<String, List<String>> placesByBeacons = new HashMap<>();
@@ -37,7 +48,12 @@ public class MainActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
+        findButton.setOnClickListener(this);
+        foundBeacon.setVisibility(View.GONE);
 
+    }
+    public void beaconFinder() {
         beaconManager = new BeaconManager(this);
         beaconManager.setRangingListener(new BeaconManager.BeaconRangingListener() {
             @Override
@@ -45,12 +61,13 @@ public class MainActivity extends AppCompatActivity{
                 if (!list.isEmpty()) {
                     com.estimote.coresdk.recognition.packets.Beacon nearestBeacon = list.get(0);
                     List<String> places = placesNearBeacon(nearestBeacon);
-                    // TODO: update the UI here
+                    noBeacon.setVisibility(View.GONE);
+                    foundBeacon.setVisibility(View.VISIBLE);
                     Log.d("Airport", "Nearest places: " + places);
                 }
             }
         });
-        region = new BeaconRegion("ranged region", UUID.fromString("replace with UUID"), null, null);
+        region = new BeaconRegion("ranged region", UUID.fromString(Constants.BEACON_UUID), null, null);
     }
 
     @Override
@@ -78,5 +95,11 @@ public class MainActivity extends AppCompatActivity{
             return PLACES_BY_BEACONS.get(beaconKey);
         }
         return Collections.emptyList();
+    }
+    @Override
+    public void onClick(View v){
+        if (v == findButton){
+            beaconFinder();
+        }
     }
 }

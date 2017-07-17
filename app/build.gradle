@@ -11,6 +11,9 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+    buildTypes.each {
+        it.buildConfigField 'String', 'BEACON_UUID', BEACON_UUID
+    }
     buildTypes {
         release {
             minifyEnabled false
@@ -26,7 +29,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile 'com.android.support:appcompat-v7:25.3.1'
-
+    compile 'com.jakewharton:butterknife:7.0.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.estimote:sdk:1.0.3@aar'
     testCompile 'junit:junit:4.12'
